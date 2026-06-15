@@ -8,13 +8,13 @@
 echo "Membangun IMPHEN-OS..."
 
 # 1. Compile Assembly Bootloader
-i686-elf-as boot.s -o boot.o
+as --32 boot.s -o boot.o
 
 # 2. Compile Kernel C
-i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
 
 # 3. Link file menjadi binary OS
-i686-elf-gcc -T linker.ld -o imphen-os.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
+gcc -m32 -T linker.ld -o imphen-os.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
 
 # 4. Verifikasi Multiboot
 if grub-file --is-x86-multiboot imphen-os.bin; then
@@ -24,4 +24,4 @@ else
 fi
 
 # 5. Jalankan di QEMU (Jika ada)
-# qemu-system-i386 -kernel imphen-os.bin
+qemu-system-i386 -kernel imphen-os.bin
